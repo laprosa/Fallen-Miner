@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet">
+  <link href="/vendor/flagiconcss/css/flag-icon.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="vendor/datatables/datatables.min.css" />
+  <script type="application/javascript" src="vendor/axios/axios.min.js"></script>
+  <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <img src="/img/fallen.jpg" width="75" height="75">
+    <h2 class="centered-title">Fallen Miner</h2>
+    <div class="centered-links">
+      <a href="/dash">Dashboard</a>
+      <a href="/devices">View Devices</a>
+      <a href="/mining">Modify Mining Configuration</a>
+    </div>
+    <br>
+    <div class="centered-links">
+      <a class="tablinks" onclick="openTab(event, 'create')">Create Tasks</a>
+      <a class="tablinks" onclick="openTab(event, 'view')">View Tasks</a>
+    </div>
+
+    <div id="create" class="tabcontent">
+      <h3>Create Task</h3>
+      <form action="/tasks" method="POST">
+        <div>
+          <h5>Available: nation, cpu, gpu, os, av, single (must put pc name in the filter option)</h5>
+          <label for="type">Option</label>
+          <br>
+          <input class="option" type="text" id="type" name="type">
+          <br>
+          <h5>Available: download, inject, update, remove</h5>
+          <label for="command">Command</label>
+          <br>
+          <input class="command" type="text" id="command" name="command" required>
+          <br><br>
+          <label for="parameters">Parameter</label>
+          <br>
+          <input type="text" id="parameters" name="parameters" required><br><br>
+          <label for="filter">Filter</label>
+          <br>
+          <input class="command" type="text" id="filter" name="filter"><br><br>
+          <label for="executions">Executions</label>
+          <br>
+          <input type="number" id="executions" name="executions" required>
+        </div>
+        <br>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div id="view" class="tabcontent">
+      <h3>View Tasks</h3>
+      <table cellspacing="0" width="100%" class="table table-responsive table-hovertext" id="tasktable">
+        <thead>
+          <tr>
+
+            <th>ID</th>
+            <th>Actions</th>
+            <th>Command</th>
+            <th>Parameter</th>
+            <th>Wanted Executions</th>
+            <th>Current Executions</th>
+            <th>Status</th>
+            <th>Date Started</th>
+            <th>Filter Type</th>
+            <th>Filter</th>
+
+
+          </tr>
+        </thead>
+        <tbody>
+          { { range .taskinfo} }
+          <tr>
+
+            <td>{ { .Tid } }</td>
+            <td>
+              <button type="button" class="btn btn-secondary btn-sm resume-button">Resume</button>
+              <button type="button" class="btn btn-danger btn-sm pause-button">Pause</button>
+              <button type="button" class="btn btn-info btn-sm delete-button">Delete</button>
+            </td>
+            <td>{ { .Command } }</td>
+            <td>{ { .Parameter } }</td>
+            <td>{ { .WantedExec } }</td>
+            <td>{ { .CurrentExec } }</td>
+            <td>{ { .Status } }</td>
+            <td class="none unix-timestamp">{ { .Created } }</td>
+            <td>{ { .FilterMethod } }</td>
+            <td style="display: inline-block; max-width:100px; word-wrap:break-word;">
+              { { .Filter } }</td>
+
+          </tr>
+          { { end} }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <script>
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+  </script>
+  <script type="application/javascript" src="vendor/jquery/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="vendor/datatables/datatables.min.js"></script>
+  <script type="application/javascript" src="js/tasks.js"></script>
+  <script>
+    function openTab(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+  </script>
+  <footer id="footer">
+    <div>
+      <p>Fallen Miner Panel V1.0</p>
+    </div>
+  </footer>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+.image-container {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    max-width: 125px; /* Limit for small screens */
+    max-height: 125px; /* Initial height */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.image-container.expanded {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.image-container.expanded img {
+    max-height: 90%;
+    max-width: 90%;
+    border-radius: 0;
+}
+
+#close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: #7f1111;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#close-button:hover {
+    background-color: #ff3030;
+}
+
+.hidden {
+    display: none;
+}
