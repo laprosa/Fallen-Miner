@@ -11,7 +11,7 @@ Fallen Miner is an open source, silent XMR miner. The readme will detail feature
 
 #### Disclaimer
 I have modified the base xmrig file to have a 2% donation fee, if you wish to disable this, please go to /src/donate.h and set the values to 0.
-
+SHA1 hash of xmrig-hidden: 1a91302a5d98d83112fd559b1e24712e8b83a4dd
 #### Donate
 If you change the donation fee to 0, please consider a one off donation, I have put work into this project so anything is appreciated :)
 
