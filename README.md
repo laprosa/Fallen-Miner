@@ -15,10 +15,13 @@ SHA1 hash of xmrig-hidden: 1a91302a5d98d83112fd559b1e24712e8b83a4dd
 #### Donate
 If you change the donation fee to 0, please consider a one off donation, I have put work into this project so anything is appreciated :)
 
-SOL: F1EtBxf4sPhUsfPdA2jVFfqJ7eLbbkxx4f2ujVhuPrxT
-XMR: 85VkL5hw9YceMWVHPGNoFgLxQxw6qwNdF51uAz96WPYmhDYwswVHhoaWPXWjvFGBstGhUNBgR9UvqcqVvYHDmAvcC9yPy4S
-BTC: bc1qrj9006vls5udt907ad8jvkts5e4d5tlua5794d
-LTC: ltc1qw7stjsqayppp726jgjwp2362djw7jplqzj2r0c
+ - SOL: F1EtBxf4sPhUsfPdA2jVFfqJ7eLbbkxx4f2ujVhuPrxT
+
+ - XMR: 85VkL5hw9YceMWVHPGNoFgLxQxw6qwNdF51uAz96WPYmhDYwswVHhoaWPXWjvFGBstGhUNBgR9UvqcqVvYHDmAvcC9yPy4S
+
+ - BTC: bc1qrj9006vls5udt907ad8jvkts5e4d5tlua5794d
+ 
+ - LTC: ltc1qw7stjsqayppp726jgjwp2362djw7jplqzj2r0c
 
 Features
 -----------------------
