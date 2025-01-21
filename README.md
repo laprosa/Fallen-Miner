@@ -17,6 +17,8 @@ If you change the donation fee to 0, please consider a one off donation, I have 
 
 SOL: F1EtBxf4sPhUsfPdA2jVFfqJ7eLbbkxx4f2ujVhuPrxT
 XMR: 85VkL5hw9YceMWVHPGNoFgLxQxw6qwNdF51uAz96WPYmhDYwswVHhoaWPXWjvFGBstGhUNBgR9UvqcqVvYHDmAvcC9yPy4S
+BTC: bc1qrj9006vls5udt907ad8jvkts5e4d5tlua5794d
+LTC: ltc1qw7stjsqayppp726jgjwp2362djw7jplqzj2r0c
 
 Features
 -----------------------
