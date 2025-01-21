@@ -1,0 +1,46 @@
+﻿  App.cpp
+  App_win.cpp
+  Summary.cpp
+  CudaKawPowRunner.cpp
+  CudaRxRunner.cpp
+C:\Users\admin\Desktop\xmrig\src\backend\cuda\runners\CudaKawPowRunner.cpp(52,35): warning C4244: 'initializing': conversion from 'uint64_t' to 'uint32_t', possible loss of data
+C:\Users\admin\Desktop\xmrig\src\backend\cuda\runners\CudaKawPowRunner.cpp(52,26): warning C4244: 'initializing': conversion from 'uint64_t' to 'const uint32_t', possible loss of data
+C:\Users\admin\Desktop\xmrig\src\backend\cuda\runners\CudaKawPowRunner.cpp(62,127): warning C4244: 'argument': conversion from 'const uint64_t' to 'uint32_t', possible loss of data
+C:\Users\admin\Desktop\xmrig\src\backend\cuda\runners\CudaRxRunner.cpp(64,106): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+  CudaLib.cpp
+  NvmlLib.cpp
+C:\Users\admin\Desktop\xmrig\src\backend\cuda\wrappers\NvmlLib.cpp(206,30): warning C4101: 'ex': unreferenced local variable
+  Json_win.cpp
+  Platform_hwloc.cpp
+  Platform_win.cpp
+  Process_win.cpp
+  HttpsClient.cpp
+C:\Users\admin\Desktop\xmrig\src\base\net\https\HttpsClient.cpp(97,29): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\admin\Desktop\xmrig\src\base\net\https\HttpsClient.cpp(136,44): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  HttpsContext.cpp
+  HttpsServer.cpp
+  Tls.cpp
+C:\Users\admin\Desktop\xmrig\src\base\net\stratum\Tls.cpp(86,28): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\admin\Desktop\xmrig\src\base\net\stratum\Tls.cpp(106,29): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  ServerTls.cpp
+C:\Users\admin\Desktop\xmrig\src\base\net\tls\ServerTls.cpp(65,28): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\admin\Desktop\xmrig\src\base\net\tls\ServerTls.cpp(84,29): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  TlsConfig.cpp
+  TlsContext.cpp
+  TlsGen.cpp
+  Controller.cpp
+  Generating Code...
+  Compiling...
+  Miner.cpp
+C:\Users\admin\Desktop\xmrig\src\crypto\randomx\blake2\blake2.h(82,25): warning C4804: '/': unsafe use of type 'bool' in operation
+  (compiling source file '../src/core/Miner.cpp')
+  
+C:\Users\admin\Desktop\xmrig\src\crypto\randomx\blake2\blake2.h(84,3): warning C4804: '/': unsafe use of type 'bool' in operation
+  (compiling source file '../src/core/Miner.cpp')
+  
+  Taskbar.cpp
+  Config.cpp
+  ConfigTransform.cpp
+  Impl.cpp
+  CnCtx.cpp
+  CnHash.cpp

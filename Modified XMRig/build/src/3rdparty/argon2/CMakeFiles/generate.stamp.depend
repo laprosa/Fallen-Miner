@@ -1,0 +1,4 @@
+# CMake generation dependency list for this directory.
+C:/Users/admin/Desktop/xmrig/src/3rdparty/argon2/CMakeLists.txt
+C:/msys64/mingw64/share/cmake/Modules/CheckCSourceCompiles.cmake
+C:/msys64/mingw64/share/cmake/Modules/Internal/CheckSourceCompiles.cmake

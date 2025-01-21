@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\lib\argon2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\lib\core.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\lib\encoding.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\lib\genkat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\lib\impl-select.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\lib\blake2\blake2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\arch\x86_64\lib\argon2-arch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\argon2\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CD949D42-7625-3530-8594-2E792A1BAC50}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+﻿  Building Custom Rule C:/Users/admin/Desktop/xmrig/src/3rdparty/argon2/CMakeLists.txt
+  argon2.c
+  core.c
+  encoding.c
+  genkat.c
+  impl-select.c
+  blake2.c
+  argon2-arch.c
+  Generating Code...
+  argon2.vcxproj -> C:\Users\admin\Desktop\xmrig\build\src\3rdparty\argon2\Debug\argon2.lib

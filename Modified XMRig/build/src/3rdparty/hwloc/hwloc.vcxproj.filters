@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\base64.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\bind.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\bitmap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\components.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\diff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\distances.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\misc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\pci-common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\shmem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\topology.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\topology-noos.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\topology-synthetic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\topology-windows.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\topology-x86.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\topology-xml.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\topology-xml-nolibxml.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\traversal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\memattrs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\cpukinds.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\include\hwloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\src\static-components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\admin\Desktop\xmrig\src\3rdparty\hwloc\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{B81D7237-0B5C-36A2-81DE-53B2E491174B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CD949D42-7625-3530-8594-2E792A1BAC50}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
