@@ -354,7 +354,7 @@ func CheckTasks(data WinSystemInfo) string {
 
 func GetConfig() []Config {
 	configinfo := []Config{}
-	configquery, err := db.Query("SELECT `pool`,`address`,`password`,`threads`,`idle_time`,`idle_threads` FROM minerconfig;")
+	configquery, err := db.Query("SELECT `pool`,`address`,`password`,`threads`,`idle_time`,`idle_threads` FROM minerconfig WHERE id=1;")
 	if err != nil {
 		log.Fatal(err)
 	}

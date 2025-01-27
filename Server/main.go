@@ -369,8 +369,8 @@ func miningPagePost(ctx iris.Context) {
 
 	if err == sql.ErrNoRows {
 
-		insertQuery := `INSERT INTO minerconfig (pool, address, password, threads, idle_time, idle_threads) 
-                    VALUES (?, ?, ?, ?, ?, ?)`
+		insertQuery := `INSERT INTO minerconfig (id, pool, address, password, threads, idle_time, idle_threads) 
+                    VALUES (1,?, ?, ?, ?, ?, ?)`
 		_, err = db.Exec(insertQuery, miningpool, miningaddress, miningpassword, threads, idleTime, idleThreads)
 		if err != nil {
 			log.Fatalf("Error inserting data: %v", err)
