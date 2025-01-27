@@ -53,6 +53,33 @@
 
               </div>
           </form>
+          { { else } }
+          <form action="/mining" method="POST">
+            <div>
+                <label for="pool">Mining Pool : Port</label>
+                <br><br>
+                <input placeholder="" type="text" id="pool" name="pool" required>
+                <br><br>
+                <label for="address">Wallet Address</label>
+                <br><br>
+                <input placeholder="" type="text" id="address" name="address" required>
+                <br><br>
+                <label for="password">Rig ID/Password</label>
+                <br><br>
+                <input placeholder="" type="text" id="password" name="password" required><br><br>
+                <label for="threads">Active Threads (%)</label>
+                <br><br>
+                <input placeholder="" type="number" id="threads" name="threads" required><br><br>
+                <label for="idle_time">Idle Time (Minutes)</label>
+                <br><br>
+                <input placeholder="" type="number" id="idle_time" name="idle_time" required><br><br>
+                <label for="idle_threads">Idle Threads (%)</label>
+                <br><br>
+                <input placeholder="" type="number" id="idle_threads" name="idle_threads" required><br><br>
+                <button type="submit">Submit</button>
+
+              </div>
+          </form>
           { { end } }
         <footer id="footer">
             <div>
