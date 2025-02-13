@@ -22,13 +22,13 @@ func runChecks() {
 		} else {
 			ResumeProcess(minerinfo.Process)
 		}
-		// if checkProcessesForMatch(processNames) {
-		// 	SuspendProcess(minerinfo.Process)
-		// 	time.Sleep(10 * time.Second)
+		if checkProcessesForMatch(processNames) {
+			SuspendProcess(minerinfo.Process)
+			time.Sleep(10 * time.Second)
 
-		// } else {
-		// 	ResumeProcess(minerinfo.Process)
-		// }
+		} else {
+			ResumeProcess(minerinfo.Process)
+		}
 
 		running := isProcessRunning(int(minerinfo.ProcessId))
 		if !running {

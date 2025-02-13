@@ -215,6 +215,13 @@ func registerPagePost(ctx iris.Context) {
 }
 
 func devicePage(ctx iris.Context) {
+	if auth, _ := sess.Start(ctx).GetBoolean("authenticated"); !auth {
+		if err := ctx.View("404"); err != nil {
+			ctx.HTML("<h3>%s</h3>", err.Error())
+			return
+		}
+		return
+	}
 	db.Exec(`UPDATE bots SET status="offline" WHERE lastcon < strftime('%s', 'now') - 360 AND lastcon > strftime('%s', 'now') - 259200`)
 	db.Exec(`UPDATE bots SET status="dead" WHERE lastcon < strftime('%s', 'now') - 259200`)
 	onlinebotsquery, err := db.Query(`SELECT LOWER(nation) AS nation, pcname, cpu, gpu, av, os, lastcon, status FROM bots WHERE status = 'online';`)
