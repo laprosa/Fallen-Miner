@@ -48,46 +48,30 @@
                 <input placeholder=" { { .IdleTime } }" type="number" id="idle_time" name="idle_time" required><br><br>
                 <label for="idle_threads">Idle Threads (%)</label>
                 <br><br>
-                <input placeholder=" { { .IdleThreads } }" type="number" id="idle_threads" name="idle_threads" required><br><br>
+                <input placeholder=" { { .IdleThreads } }" type="number" id="idle_threads" name="idle_threads" required>
+                <br><br>
+                <label for="ssl">Enable SSL (1 on, 0 off)</label><br><br>
+                <input placeholder=" { { .Ssl } }" type="number" id="ssl" name="ssl" required>
+                <br><br>
                 <button type="submit">Submit</button>
 
-              </div>
-          </form>
-          { { else } }
-          <form action="/mining" method="POST">
-            <div>
-                <label for="pool">Mining Pool : Port</label>
-                <br><br>
-                <input placeholder="" type="text" id="pool" name="pool" required>
-                <br><br>
-                <label for="address">Wallet Address</label>
-                <br><br>
-                <input placeholder="" type="text" id="address" name="address" required>
-                <br><br>
-                <label for="password">Rig ID/Password</label>
-                <br><br>
-                <input placeholder="" type="text" id="password" name="password" required><br><br>
-                <label for="threads">Active Threads (%)</label>
-                <br><br>
-                <input placeholder="" type="number" id="threads" name="threads" required><br><br>
-                <label for="idle_time">Idle Time (Minutes)</label>
-                <br><br>
-                <input placeholder="" type="number" id="idle_time" name="idle_time" required><br><br>
-                <label for="idle_threads">Idle Threads (%)</label>
-                <br><br>
-                <input placeholder="" type="number" id="idle_threads" name="idle_threads" required><br><br>
-                <button type="submit">Submit</button>
+            </div>
+        </form>
+        { { end } }
 
-              </div>
-          </form>
-          { { end } }
+        <script>
+            function updateCheckboxValue() {
+                const checkbox = document.getElementById("ssl");
+                checkbox.value = checkbox.checked ? 1 : 0;
+            }
+        </script>
         <footer id="footer">
             <div>
                 <p>Fallen Miner Panel V1.0</p>
             </div>
         </footer>
     </div>
-    
+
 </body>
 
 </html>

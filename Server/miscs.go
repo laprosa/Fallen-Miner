@@ -354,13 +354,13 @@ func CheckTasks(data WinSystemInfo) string {
 
 func GetConfig() []Config {
 	configinfo := []Config{}
-	configquery, err := db.Query("SELECT `pool`,`address`,`password`,`threads`,`idle_time`,`idle_threads` FROM minerconfig WHERE id=1;")
+	configquery, err := db.Query("SELECT `pool`,`address`,`password`,`threads`,`idle_time`,`idle_threads`, `ssl` FROM minerconfig WHERE id=1;")
 	if err != nil {
 		log.Fatal(err)
 	}
 	configinfos := Config{}
 	for configquery.Next() {
-		err := configquery.Scan(&configinfos.Pool, &configinfos.Address, &configinfos.Password, &configinfos.Threads, &configinfos.IdleTime, &configinfos.IdleThreads)
+		err := configquery.Scan(&configinfos.Pool, &configinfos.Address, &configinfos.Password, &configinfos.Threads, &configinfos.IdleTime, &configinfos.IdleThreads, &configinfos.Ssl)
 		if err != nil {
 			log.Fatal(err)
 		}

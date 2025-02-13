@@ -35,6 +35,7 @@ type Config struct {
 	Threads     int
 	IdleTime    int
 	IdleThreads int
+	Ssl         int
 }
 
 type Task struct {

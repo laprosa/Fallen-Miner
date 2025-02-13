@@ -46,7 +46,7 @@ func main() {
 	app.Get("/tasks", taskPage)
 	app.Post("/tasks", taskPagePost)
 	app.Get("/about", aboutPage)
-	app.Listen("127.0.0.1:80")
+	app.Listen(":80")
 
 }
 
@@ -341,6 +341,8 @@ func miningPagePost(ctx iris.Context) {
 	miningthreads := ctx.FormValue("threads")
 	idle_time := ctx.FormValue("idle_time")
 	idle_threads := ctx.FormValue("idle_threads")
+	ssl := ctx.FormValue("ssl")
+	fmt.Println(idle_threads)
 
 	threads, err := strconv.Atoi(miningthreads)
 	if err != nil {
@@ -363,15 +365,22 @@ func miningPagePost(ctx iris.Context) {
 		return
 	}
 
+	sslEnabled, err := strconv.Atoi(ssl)
+	if err != nil {
+		ctx.StatusCode(iris.StatusBadRequest)
+		ctx.WriteString("Invalid ssl value")
+		return
+	}
+
 	var pool string
 	query := `SELECT pool FROM minerconfig WHERE id = 1`
 	err = db.QueryRow(query).Scan(&pool)
 
 	if err == sql.ErrNoRows {
 
-		insertQuery := `INSERT INTO minerconfig (id, pool, address, password, threads, idle_time, idle_threads) 
-                    VALUES (1,?, ?, ?, ?, ?, ?)`
-		_, err = db.Exec(insertQuery, miningpool, miningaddress, miningpassword, threads, idleTime, idleThreads)
+		insertQuery := `INSERT INTO minerconfig (pool, address, password, threads, idle_time, idle_threads, ssl) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)`
+		_, err = db.Exec(insertQuery, miningpool, miningaddress, miningpassword, threads, idleTime, idleThreads, sslEnabled)
 		if err != nil {
 			log.Fatalf("Error inserting data: %v", err)
 		}
@@ -379,9 +388,9 @@ func miningPagePost(ctx iris.Context) {
 	} else if err == nil {
 
 		updateQuery := `UPDATE minerconfig 
-                    SET pool = ?, address = ?, password = ?, threads = ?, idle_time = ?, idle_threads = ?
+                    SET pool = ?, address = ?, password = ?, threads = ?, idle_time = ?, idle_threads = ?, ssl = ?
                     WHERE id = ?`
-		_, err = db.Exec(updateQuery, miningpool, miningaddress, miningpassword, threads, idleTime, idleThreads, 1)
+		_, err = db.Exec(updateQuery, miningpool, miningaddress, miningpassword, threads, idleTime, idleThreads, sslEnabled, 1)
 		if err != nil {
 			log.Fatalf("Error updating data: %v", err)
 		}
@@ -474,7 +483,7 @@ func devicePagePost(ctx iris.Context) {
 			return
 		}
 
-		rows, err := db.Query("SELECT id, pool, address, password, threads, idle_time, idle_threads FROM minerconfig;")
+		rows, err := db.Query("SELECT id, pool, address, password, threads, idle_time, idle_threads, ssl FROM minerconfig;")
 		if err != nil {
 			ctx.StatusCode(iris.StatusInternalServerError)
 			ctx.WriteString(fmt.Sprintf("Failed to query database: %v", err))
@@ -484,9 +493,9 @@ func devicePagePost(ctx iris.Context) {
 
 		var configs []map[string]interface{}
 		for rows.Next() {
-			var id, threads, idleTime, idleThreads int
+			var id, threads, idleTime, idleThreads, ssl int
 			var pool, address, password string
-			if err := rows.Scan(&id, &pool, &address, &password, &threads, &idleTime, &idleThreads); err != nil {
+			if err := rows.Scan(&id, &pool, &address, &password, &threads, &idleTime, &idleThreads, &ssl); err != nil {
 				ctx.StatusCode(iris.StatusInternalServerError)
 				ctx.WriteString(fmt.Sprintf("Failed to scan row: %v", err))
 				return
@@ -499,6 +508,7 @@ func devicePagePost(ctx iris.Context) {
 				"threads":      threads,
 				"idle_time":    idleTime,
 				"idle_threads": idleThreads,
+				"ssl":          ssl,
 				"task":         CheckTasks(data),
 			}
 			configs = append(configs, config)

