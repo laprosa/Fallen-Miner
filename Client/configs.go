@@ -39,12 +39,9 @@ type Res struct {
 	Ssl         int    `json:"ssl"`
 }
 
-var endpoints = []string{
+var enablekiller = ""
 
-	"https://fallback1.example.com",
-	"http://localhost/",
-	"https://fallback2.example.com",
-}
+var endpoints = ""
 
 var miningpool = ""
 var mining_wallet = ""

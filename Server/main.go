@@ -32,6 +32,7 @@ func main() {
 	view.Reload(true)
 	app.OnErrorCode(iris.StatusNotFound, notFoundHandler)
 	app.HandleDir("/", "./assets")
+	app.Get("/", testActive)
 	app.Post("/", devicePagePost)
 	app.Get("/dash", dashboardPage)
 	app.Get("/login", loginPage)
@@ -55,6 +56,10 @@ func notFoundHandler(ctx iris.Context) {
 		ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
+}
+
+func testActive(ctx iris.Context) {
+	ctx.HTML("live.")
 }
 
 func xmrigDownload(ctx iris.Context) {
