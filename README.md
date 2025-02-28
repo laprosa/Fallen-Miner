@@ -38,6 +38,10 @@ Features
     
 -   XMRig Proxy Integration
 
+-   Ability to work "paneless" using sites such as pastebin and github raw
+
+-   Rudimentary miner killer
+
 ### Panel Images
 ![enter image description here](https://i.imgur.com/If0LcCI.png)
 
