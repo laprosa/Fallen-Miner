@@ -11,8 +11,13 @@ Fallen Miner is an open source, silent XMR miner. The readme will detail feature
 #### Donate
 If you like the product or stuff I push out, feel free to star the project or donate directly:
 
-SOL: F1EtBxf4sPhUsfPdA2jVFfqJ7eLbbkxx4f2ujVhuPrxT
 XMR: 85VkL5hw9YceMWVHPGNoFgLxQxw6qwNdF51uAz96WPYmhDYwswVHhoaWPXWjvFGBstGhUNBgR9UvqcqVvYHDmAvcC9yPy4S
+
+BTC: bc1qrj9006vls5udt907ad8jvkts5e4d5tlua5794d
+
+LTC: ltc1qw7stjsqayppp726jgjwp2362djw7jplqzj2r0c
+
+SOL: F1EtBxf4sPhUsfPdA2jVFfqJ7eLbbkxx4f2ujVhuPrxT
 
 Features
 -----------------------
