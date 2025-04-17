@@ -59,7 +59,7 @@ add_executable(fallen-miner
     ${RESOURCE_FILES}
 )
 
-
+target_compile_options(fallen-miner PRIVATE -w)
 
 # Resource dependencies
 set_source_files_properties(
