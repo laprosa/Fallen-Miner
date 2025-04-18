@@ -26,6 +26,8 @@ int pool_ssl;
 int main(int argc, char *argv[])
 {
     std::wstring url = L"http";
+    std::wcout << url << std::endl;
+
 
     // Single function call to fetch and print
     std::string jsonStr = fetchJsonFromUrl(url);

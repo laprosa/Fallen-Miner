@@ -134,7 +134,7 @@ func buildclient(serveraddress string) {
 	}
 
 	if err := buildProject(); err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
 	if err := restoreFile(backupFileName, srcFile); err != nil {
@@ -176,6 +176,8 @@ func buildProject() error {
 
 	// Use absolute path to CMake
 	cmake := exec.Command(cmakePath, "-G", "MinGW Makefiles", "..")
+	// cmake.Stdout = os.Stdout
+	// cmake.Stderr = os.Stderr
 	cmake.Dir = "build"
 	if err := cmake.Run(); err != nil {
 		return fmt.Errorf("CMake failed: %v", err)
@@ -184,6 +186,9 @@ func buildProject() error {
 	numCores := runtime.NumCPU()
 	fmt.Printf("Using %d CPU cores\n", numCores)
 	make := exec.Command(makePath, fmt.Sprintf("-j%d", numCores))
+	// make.Stdout = os.Stdout
+	// make.Stderr = os.Stderr
+	make.Env = append(os.Environ(), fmt.Sprintf("PATH=%s;%s", mingwPath, os.Getenv("PATH")))
 	make.Dir = "build"
 	return make.Run()
 }
