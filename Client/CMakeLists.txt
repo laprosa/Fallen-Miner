@@ -51,6 +51,9 @@ set(RESOURCE_FILES
     resources/embedded.exe
 )
 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a") 
+
 # Create executable
 add_executable(fallen-miner 
     WIN32 
