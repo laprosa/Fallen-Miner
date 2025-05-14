@@ -1,14 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 const (
@@ -42,21 +43,73 @@ func init() {
 }
 
 func main() {
-	fileContent, err := os.ReadFile("config.json")
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Ensure that the url is a direct link, e.g. https://pastebin.com/raw/ZHXsGnnu")
+	fmt.Print("Enter the URL: ")
+	url, err := reader.ReadString('\n')
 	if err != nil {
-		fmt.Printf("Error reading file: %v\n", err)
+		fmt.Printf("Error reading input: %v\n", err)
 		return
 	}
+	url = strings.TrimSpace(url)
 
-	// Parse the JSON into our struct
-	var config Config
-	err = json.Unmarshal(fileContent, &config)
+	// Get debug mode preference
+	fmt.Print("Enable debug mode? (y/n): ")
+	debugInput, err := reader.ReadString('\n')
 	if err != nil {
-		fmt.Printf("Error parsing JSON: %v\n", err)
+		fmt.Printf("Error reading input: %v\n", err)
 		return
 	}
-	buildclient(config.Url)
+	debugMode := strings.ToLower(strings.TrimSpace(debugInput)) == "y"
 
+	// Modify CMakeLists.txt based on debug mode
+	err = toggleWin32Flag(debugMode)
+	if err != nil {
+		fmt.Printf("Error modifying CMakeLists.txt: %v\n", err)
+		return
+	}
+	defer func() {
+		// Restore original state when done
+		err := toggleWin32Flag(!debugMode)
+		if err != nil {
+			fmt.Printf("Error restoring CMakeLists.txt: %v\n", err)
+		}
+	}()
+
+	buildclient(url)
+
+}
+
+func toggleWin32Flag(debugMode bool) error {
+	content, err := os.ReadFile("CMakeLists.txt")
+	if err != nil {
+		return err
+	}
+
+	lines := strings.Split(string(content), "\n")
+	targetLine := "add_executable(fallen-miner"
+	win32Flag := "WIN32"
+
+	for i, line := range lines {
+		if strings.Contains(line, targetLine) {
+			if debugMode {
+				// Comment out WIN32 flag
+				lines[i] = strings.Replace(line, win32Flag, "#"+win32Flag, 1)
+			} else {
+				// Uncomment WIN32 flag
+				lines[i] = strings.Replace(line, "#"+win32Flag, win32Flag, 1)
+			}
+			break
+		}
+	}
+
+	modifiedContent := strings.Join(lines, "\n")
+	err = os.WriteFile("CMakeLists.txt", []byte(modifiedContent), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func copyFile(src, dest string) error {

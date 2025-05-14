@@ -74,9 +74,6 @@ int main(int argc, char *argv[])
     std::string template_cmd = "--donate-level 2 -o {pool} -u {address} -k {tls} -p {password} --cpu-max-threads-hint={threads}";
     std::unordered_map<std::string, std::string> replacements;
 
-    if (pool_password == "{USER}")
-    {
-    }
 
     if (IsDeviceIdle(pool_idle_time))
     {
