@@ -231,3 +231,26 @@ bool IsForegroundWindowFullscreen() {
             windowRect.right >= monitorInfo.rcMonitor.right &&
             windowRect.bottom >= monitorInfo.rcMonitor.bottom);
 }
+
+
+
+bool IsAnotherInstanceRunning(const char* mutexName) {
+    HANDLE hMutex = CreateMutexA(
+        NULL,           // Default security attributes
+        TRUE,           // Initially owned
+        mutexName);     // Unique mutex name (ANSI version)
+
+    if (hMutex == NULL) {
+        std::cerr << "CreateMutex error: " << GetLastError() << std::endl;
+        return true; // Assume another instance is running to be safe
+    }
+
+    if (GetLastError() == ERROR_ALREADY_EXISTS) {
+        ReleaseMutex(hMutex);
+        CloseHandle(hMutex);
+        return true;
+    }
+
+    // Mutex is held; release it when the program exits
+    return false;
+}

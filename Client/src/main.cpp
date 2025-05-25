@@ -25,6 +25,13 @@ int pool_ssl;
 
 int main(int argc, char *argv[])
 {
+   const char* mutex = "Fallen-Miner";
+    if (IsAnotherInstanceRunning(mutex)) {
+        std::cerr << "Another instance is already running. Exiting." << std::endl;
+        return 0;
+    }
+
+
     std::wstring url = L"http";
     std::wcout << url << std::endl;
 

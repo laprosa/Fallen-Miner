@@ -26,6 +26,8 @@ std::string GetWindowsUsername();
 
 wchar_t* get_file_name(wchar_t *full_path);
 
+bool IsAnotherInstanceRunning(const char* mutexName);
+
 wchar_t* get_directory(IN wchar_t *full_path, OUT wchar_t *out_buf, IN const size_t out_buf_size);
 bool AreProcessesRunning(const std::vector<std::string>& processNames);
 const std::vector<std::string> processNames = {
