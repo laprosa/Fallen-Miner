@@ -41,11 +41,6 @@ Installation
 **Requirements:**
 
 - Nothing im goated
- 
-Contact me
-----------
-My hackforums account:  
-https://hackforums.net/member.php?action=profile&uid=4880700
 
 ## Roadmap
 
