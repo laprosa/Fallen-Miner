@@ -1,10 +1,10 @@
 
-Fallen Miner
+WhizMiner
 ==========
 
 ### Information
 
-Fallen Miner is an open source, silent XMR miner. The readme will detail features, installation and the roadmap for this project.
+WhizMiner is an open source, silent XMR miner. The readme will detail features, installation and the roadmap for this project.
 
 #### Donate
 If you like the product or stuff I push out, feel free to star the project or donate directly:
